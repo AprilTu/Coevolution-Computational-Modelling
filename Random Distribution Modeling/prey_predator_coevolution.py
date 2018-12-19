@@ -1,6 +1,9 @@
 """A simulation of coevolution of prey and predator
 ( birth、death、competition and mutation) using Weini's Gillespie Algorithm """
 
+# both prey and predator can mutate
+# this version has been refined
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -150,25 +153,14 @@ while t <= T:
     total_predator_number = sum([i.Ny for i in current_predator_type])
     
     # ❶Define the reaction rates.
-    # 列表解析法生成列表，顺序对应着 current_type 的顺序，便于后续检索： 很优秀！
     prey_birth_without_mutation = [(1-ux) * i.gi * i.Nx for i in current_prey_type]
     prey_birth_with_mutation = sum([ux * i.gi * i.Nx for i in current_prey_type])
     prey_competition_death = [rc * i.Nx * total_prey_number for i in current_prey_type]
     prey_intrinsic_death = [dx * i.Nx for i in current_prey_type]
-    
-
-    # 有predator的反应
-    # A list 
+     
     predation_without_birth = predation_without_reproduction(current_prey_type, current_predator_type)
-
-    #### 处理一下最困难的二维数据：既需要知道i in Prey 也需要知道 l in Predator
-    ### 掌握列表解析，好像不是很难呀——列表解析从左到右扫描
-    ### 后面需要转化为数组
     predation_with_birth_without_mutation = [i.Nx * l.Ny * l.kl * predation_rate(i.gi, l.kl) * (1-uy) for i in current_prey_type for l in current_predator_type]
-
-    # 可能会出问题 重写 >> ok
     predation_with_birth_with_mutation = predation_with_reproduction_with_mutation(current_prey_type, current_predator_type)
-
     predator_intrinsic_death = [dy * l.Ny for l in current_predator_type]
 
     ## ❷calculate the reation time with a random number: (1/ai) * log(1/ri).
@@ -193,7 +185,7 @@ while t <= T:
 
     ### tau for reaction and renew the time 
     tau = min([prey_ndarray_min, prey_predator_array_min, time_prey_birth_with_mutation, time_predator_intrinsic_death_min])
-    
+   
     t += tau
 
     ### pick up the reaction:
@@ -240,15 +232,14 @@ while t <= T:
 all_prey_type = current_prey_type + extinct_prey_type
 all_predator_type = current_predator_type + extinct_predator_type
 
-# 画布1
+## Prey:
 plt.subplot(211)
-
 for i in all_prey_type:
     if max(i.population_size) >= 5:
         plt.plot(i.time, i.population_size, linewidth=1, label='g='+str(i.gi))
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2)
 
-# 画布2
+# Predator:
 plt.subplot(212)
 for l in all_predator_type:
     if max(l.population_size) >= 4:
