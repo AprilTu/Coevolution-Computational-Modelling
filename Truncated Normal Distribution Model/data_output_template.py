@@ -97,7 +97,6 @@ def predator_extinction_check(current_predator_type, s=0):
  
 def calculate_simpson_index(species_list, simpson_index_list):
     """Calculate the Simpson's Diversity Index: 1 - ∑pi**2,  pi is the proportion of characters belonging to the ith type of letter in the string of interest. And then append the index into simpson_index_list."""
-    
     species_list_array = np.array(species_list) # transform it into array
     ratio = species_list_array / species_list_array.sum()
     simpson_index = 1 - sum(ratio**2)
@@ -235,7 +234,8 @@ while loop_number < 1000:
         ### ★tau for reaction and renew the time 
         tau = min(prey_array_min, prey_predator_without_mutation_array_min, prey_predator_with_mutation_array_min, time_predator_intrinsic_death_min)
 
-        t = t + tau # ⚠️NOTE HERE! Things will go wrong when write 't += tau', still not knowing why...⚠️
+        t = t + tau 
+	# ⚠️NOTICE! Things will go wrong when write 't += tau', still not knowing why...⚠️
         
         ## ❹ Select which reaction takes place and update the number.
         if tau == prey_array_min:
