@@ -128,7 +128,6 @@ uy = 0.001  # mutation rate of predation per division
 kmax = 0.3  # the maximum reproduction efficacy
 
 ## Time
-t = 0.0  # float; start time
 T = 2000.0 # float; maximum elapsed time
 
 ## For the mutation of gi and kl: Truncated Normal Distribution Parameters ☆☆☆
@@ -165,8 +164,9 @@ while loop_number < 1000:
     loop_number = loop_number + 1
 
     # For each run, set the initial conditions
+    t = 0.0  # float; start time
     ancestor_prey = Prey(Nx=1000, gi=1.0)
-	ancestor_predator = Predator(Ny=100, kl=0.3)
+    ancestor_predator = Predator(Ny=100, kl=0.3)
 
     current_prey_type = [ancestor_prey]  # record current prey 
     current_predator_type = [ancestor_predator]  # record current predator
